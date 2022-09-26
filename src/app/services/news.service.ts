@@ -1,6 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { Article, NewsResponse } from '../interfaces';
 
 const apiKey = environment.apiKey;
 
@@ -11,11 +14,13 @@ export class NewsService {
 
   constructor(private http: HttpClient) { }
 
-getTopHeadLines(){
-  return this.http.get(`https://newsapi.org/v2/everything?q=tesla&from=2022-08-26&sortBy=publishedAt`, {
+getTopHeadLines() : Observable<Article[]>{
+  return this.http.get<NewsResponse>(`https://newsapi.org/v2/everything?q=tesla&from=2022-08-26&sortBy=publishedAt`, {
     params: {
       apiKey
     }
-  });
+  }).pipe(
+    map(({articles}) => articles)
+  );
 }
 }
