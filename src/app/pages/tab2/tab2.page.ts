@@ -22,13 +22,25 @@ export class Tab2Page implements OnInit {
     });
   }
 
-  segmentChanged(category:any){
-    this.selectedCategory = category.detail.value;
-    console.log(category.detail.value)
+  segmentChanged(category:Event){
+    this.selectedCategory = (category as CustomEvent).detail.value;
+    // console.log(category.detail.value)
 
     this.newsService.getTopHeadLinesByCategory(this.selectedCategory).subscribe(articles => {
       console.log(articles);
       this.articles = [...articles];
+    });
+  }
+
+  loadData(event: any){
+    this.newsService.getTopHeadLinesByCategory(this.selectedCategory, true).subscribe(articles => {
+      console.log(articles)
+      if(articles.length === this.articles.length) {
+        event.target.disabled = true;
+        return;
+      }
+      this.articles = articles;
+      event.target.complete();
     });
   }
 }
