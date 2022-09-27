@@ -1,7 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Article } from 'src/app/interfaces';
+import { ActionSheetButton, ActionSheetController, Platform } from '@ionic/angular';
+
+// Plugins
 import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
-import { Platform } from '@ionic/angular';
+import { SocialSharing } from '@awesome-cordova-plugins/social-sharing/ngx';
 
 @Component({
   selector: 'app-article',
@@ -14,7 +17,9 @@ export class ArticleComponent implements OnInit {
   @Input() index: number;
   constructor(
     private iab: InAppBrowser,
-    private platform: Platform
+    private platform: Platform,
+    private actionSheetCtl: ActionSheetController,
+    private socialSharing: SocialSharing
   ) { }
 
   ngOnInit() {}
@@ -30,7 +35,57 @@ export class ArticleComponent implements OnInit {
     window.open(this.article.url, '_blank');
   }
 
-  onClick(){
+  async onOpenMenu(){
 
+    const normalBts: ActionSheetButton[] = [
+      // {
+        //   text: 'Compartir',
+        //   icon: 'share-outline',
+        //   handler: () => this.onShareArticle()
+        // },
+        {
+          text: 'Factorito',
+          icon: 'heart-outline',
+          handler: () => this.onToggleFavorito()
+        },
+        {
+          text: 'Cancelar',
+          icon: 'close-outline',
+          role: 'cancel',
+          cssClass: 'secondary'
+        }
+    ]
+
+    const shareBtn: ActionSheetButton = {
+      text: 'Compartir',
+      icon: 'share-outline',
+      handler: () => this.onShareArticle()
+    };
+
+    if(this.platform.is('capacitor')){
+      normalBts.unshift(shareBtn);
+    }
+
+    const actionSheet = await this.actionSheetCtl.create({
+      header: 'Opciones',
+      buttons: normalBts
+    });
+
+    await actionSheet.present();
+  }
+
+  onShareArticle(){
+    // console.log('share article')
+    const {title, source, url} = this.article;
+    this.socialSharing.share(
+      title,
+      source.name,
+      null,
+      url
+    );
+  }
+
+  onToggleFavorito(){
+    console.log('togggle favorito')
   }
 }
