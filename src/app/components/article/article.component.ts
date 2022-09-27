@@ -1,10 +1,14 @@
+// Angular
 import { Component, Input, OnInit } from '@angular/core';
-import { Article } from 'src/app/interfaces';
 import { ActionSheetButton, ActionSheetController, Platform } from '@ionic/angular';
 
 // Plugins
 import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 import { SocialSharing } from '@awesome-cordova-plugins/social-sharing/ngx';
+import { StorageService } from 'src/app/services/storage.service';
+
+// Owner
+import { Article } from 'src/app/interfaces';
 
 @Component({
   selector: 'app-article',
@@ -19,7 +23,8 @@ export class ArticleComponent implements OnInit {
     private iab: InAppBrowser,
     private platform: Platform,
     private actionSheetCtl: ActionSheetController,
-    private socialSharing: SocialSharing
+    private socialSharing: SocialSharing,
+    private storageService: StorageService
   ) { }
 
   ngOnInit() {}
@@ -44,7 +49,7 @@ export class ArticleComponent implements OnInit {
         //   handler: () => this.onShareArticle()
         // },
         {
-          text: 'Factorito',
+          text: 'Favorito',
           icon: 'heart-outline',
           handler: () => this.onToggleFavorito()
         },
@@ -86,6 +91,7 @@ export class ArticleComponent implements OnInit {
   }
 
   onToggleFavorito(){
-    console.log('togggle favorito')
+    // console.log('togggle favorito')
+    this.storageService.saveRemoveArticle(this.article);
   }
 }
