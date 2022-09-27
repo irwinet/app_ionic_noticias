@@ -13,10 +13,16 @@ export class StorageService {
     this.init();
   }
 
+  get getLocalArticles(){
+    return [...this._localArticles];
+  }
+
   async init() {
     // If using, define drivers here: await this.storage.defineDriver(/*...*/);
     const storage = await this.storage.create();
     this._storage = storage;
+
+    this.loadFavorites();
   }
 
   async saveRemoveArticle(article: Article){
@@ -30,6 +36,19 @@ export class StorageService {
     }
 
     this._storage.set('articles', this._localArticles);
+  }
+
+  async loadFavorites(){
+    try {
+      const articles = await this._storage.get('articles');
+      this._localArticles = articles || [];
+    } catch (error) {
+
+    }
+  }
+
+  articleInFavorites(article: Article){
+    return !!this._localArticles.find(x => x.title === article.title);
   }
 
 }
