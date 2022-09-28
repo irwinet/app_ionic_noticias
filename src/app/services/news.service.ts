@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { storedArticlesByCategory } from '../data/mock-news';
 import { Article, ArticlesByCategoryAndPage, NewsResponse } from '../interfaces';
 
 const apiKey = environment.apiKey;
@@ -13,7 +14,7 @@ const apiUrl = environment.apiUrl;
 })
 export class NewsService {
 
-  private articlesByCategoryAndPage: ArticlesByCategoryAndPage = {}
+  private articlesByCategoryAndPage: ArticlesByCategoryAndPage = storedArticlesByCategory; // {}
 
   constructor(private http: HttpClient) { }
 
@@ -36,6 +37,9 @@ export class NewsService {
   }
 
   getTopHeadLinesByCategory(category: string, loadMore: boolean = false): Observable<Article[]> {
+    return of(this.articlesByCategoryAndPage[category].articles);
+
+    /*
     if(loadMore) {
       return this.getArticlesByCategory(category);
     }
@@ -45,6 +49,7 @@ export class NewsService {
     }
 
     return this.getArticlesByCategory(category);
+    */
   }
 
   private getArticlesByCategory(category: string): Observable<Article[]>{

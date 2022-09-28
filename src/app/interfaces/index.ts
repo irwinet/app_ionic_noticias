@@ -5,13 +5,13 @@ export interface NewsResponse {
 }
 
 export interface Article {
-  source:      Source;
-  author:      string;
-  title:       string;
+  source:       Source;
+  author:       string;
+  title:        string;
   description?: string;
-  url:         string;
+  url:          string;
   urlToImage?:  string;
-  publishedAt: Date;
+  publishedAt:  string;
   content?:     string;
 }
 
