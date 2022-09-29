@@ -69,9 +69,9 @@ export class ArticleComponent implements OnInit {
       handler: () => this.onShareArticle()
     };
 
-    if(this.platform.is('capacitor')){
+    //if(this.platform.is('capacitor')){
       normalBts.unshift(shareBtn);
-    }
+    //}
 
     const actionSheet = await this.actionSheetCtl.create({
       header: 'Opciones',
@@ -83,13 +83,29 @@ export class ArticleComponent implements OnInit {
 
   onShareArticle(){
     // console.log('share article')
-    const {title, source, url} = this.article;
-    this.socialSharing.share(
-      title,
-      source.name,
-      null,
-      url
-    );
+    if(this.platform.is('capacitor')){
+      const {title, source, url} = this.article;
+      this.socialSharing.share(
+        title,
+        source.name,
+        null,
+        url
+      );
+    }
+    else{
+      if (navigator.share) {
+        navigator.share({
+          title: this.article.title,
+          text: this.article.description,
+          url: this.article.url,
+        })
+          .then(() => console.log('Successful share'))
+          .catch((error) => console.log('Error sharing', error));
+      }
+      else{
+        console.log('No se pudo compartir porque no se soporta')
+      }
+    }
   }
 
   onToggleFavorito(){
